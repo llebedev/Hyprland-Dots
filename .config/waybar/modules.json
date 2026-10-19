@@ -19,6 +19,8 @@
 	},
 
 
+    // FIXED: "exec" was nested inside "format-icons" (meaningless there)
+    // and left a dangling trailing comma behind it.
     "hyprland/workspaces": {
         "disable-scroll": false,
         "all-outputs": true,
@@ -27,8 +29,7 @@
         "format-icons": {
             "urgent": "",
             "active": "",
-            "default": "",
-        "exec": "hyprctl clients -w -f"
+            "default": ""
         }
     },
  /*   "wlr/taskbar": {
@@ -41,13 +42,15 @@
         "on-click": "activate"
     },
     */
+	// FIXED: window_activate / window_raise / window_lower are not Hyprland
+	// dispatchers and never were, so these clicks did nothing. "exec" is also
+	// meaningless on a built-in module. Under Lua configs the dispatch syntax
+	// is  hyprctl dispatch 'hl.dsp.window.alter_zorder({ mode = "top" })'  if
+	// you want to wire something up here.
 	"hyprland/window": {
         "format": "{title}",
-        //"max-length": 30,
-        "on-click": "hyprctl dispatch window_activate {id}",
-        "on-scroll-up": "hyprctl dispatch window_raise {id}",
-        "on-scroll-down": "hyprctl dispatch window_lower {id}",
-        "exec": "hyprctl clients -w -f"
+        "max-length": 60,
+        "separate-outputs": true
     },
     "custom/swaync": {
 	"tooltip": true,
@@ -154,7 +157,11 @@
     },
     "temperature": {
         "interval": 10,
-        "hwmon-path": "/sys/devices/platform/coretemp.0/hwmon/hwmon4/temp1_input",
+        // FIXED: the old config hardcoded .../hwmon4/temp1_input. That index is
+        // assigned at boot and differs per machine, so the module silently showed
+        // nothing (or another chip's reading) anywhere but the author's PC.
+        // Leaving it unset lets waybar autodetect. If you need a specific chip,
+        // use "hwmon-path-abs" + "input-filename" instead of a numbered path.
         "critical-threshold": 100,
         "format-critical": " {temperatureC}",
         "format": " {temperatureC}°C"
@@ -247,8 +254,8 @@
 	"on-click": "playerctl previous",
 	"on-click-right": "playerctl next",
 	"scroll-step": 5.0,
-	"on-scroll-up": "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-",
-	"on-scroll-down": "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+",
+	"on-scroll-up": "wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+",
+	"on-scroll-down": "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-",
 	"smooth-scrolling-threshold": 1,
 	"player-icons": {
 		"chromium": "",

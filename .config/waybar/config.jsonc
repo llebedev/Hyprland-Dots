@@ -1,11 +1,18 @@
 // -*- mode: jsonc -*-
 {
-    "layer": "top", // Waybar at top layer
-    "position": "top", // Waybar position (top|bottom|left|right)
-    //"height": 46,// Waybar height (to be removed for auto height)
-    "width": 1900, // Waybar width
-    "spacing": 2, // Gaps between modules (4px)
-    // Choose the order of the modules
+    "layer": "top",
+    "position": "top",
+
+    // FIXED: the old config hardcoded "width": 1900, which only lines up on a
+    // 1920px-wide screen. On anything else the bar was visibly off-centre or
+    // overflowed. Omitting width lets waybar span the output; use margins to
+    // inset it instead.
+    "margin-top": 4,
+    "margin-left": 10,
+    "margin-right": 10,
+
+    "spacing": 2,
+
     "modules-left": [
         "custom/arch",
         //"custom/search",
@@ -16,13 +23,13 @@
         "power-profiles-daemon",
         "custom/cava_mviz",
         "mpris",
-        //"wlr/taskbar"
         "hyprland/window"
-        
     ],
+
     "modules-center": [
         "hyprland/workspaces"
     ],
+
     "modules-right": [
         "idle_inhibitor",
         "pulseaudio",
@@ -32,13 +39,16 @@
         "bluetooth",
         "hyprland/language",
         "tray",
+        // NOTE: custom/swaync needs swaync running. conf/autostart.lua starts
+        // dunst instead. Pick one — either switch M.notifier to "swaync" in
+        // conf/programs.lua, or remove this module. Left in place to preserve
+        // the original layout.
         "custom/swaync",
         "clock",
         "custom/power"
     ],
-    //Modules configuration
-    
+
     "include": [
-		"~/.config/waybar/modules.json"
-	]
+        "~/.config/waybar/modules.json"
+    ]
 }
